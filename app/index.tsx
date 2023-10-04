@@ -17,7 +17,7 @@ export default function Page() {
   }
 
   if (!user) {
-    return <Redirect href="/auth/goals" />;
+    return <Redirect href="/auth/success" />;
   } else if (user) {
     return <Redirect href="/home" />;
   }

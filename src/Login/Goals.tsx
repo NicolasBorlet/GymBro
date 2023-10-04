@@ -2,8 +2,14 @@ import { Dimensions, Image, Pressable, Text, View } from "react-native";
 import { styles } from "./Login";
 import Carousel from "react-native-reanimated-carousel";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../../firebaseConfig";
+import { router } from "expo-router";
 
 const Goals = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const width = Dimensions.get("window").width;
 
   const carouselData = [
@@ -27,9 +33,20 @@ const Goals = () => {
     },
   ];
 
-  const onSubmit = () => {
-    console.log("onSubmit");
-  };
+  async function onSubmit() {
+    const user = auth.currentUser;
+
+    if (user && activeIndex != undefined) {
+      const userRef = doc(db, "user", user.uid);
+
+      await updateDoc(userRef, {
+        profile: activeIndex,
+      });
+
+      console.log("Document successfully updated!");
+      router.push("/auth/success");
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -56,7 +73,7 @@ const Goals = () => {
           mode="parallax"
           data={carouselData}
           scrollAnimationDuration={1000}
-          onSnapToItem={(index) => console.log("current index:", index)}
+          onSnapToItem={(index) => setActiveIndex(index)}
           renderItem={({ item }) => (
             <LinearGradient
               colors={["#EEA4CE", "#C150F6"]}
