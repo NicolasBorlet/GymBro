@@ -4,7 +4,6 @@ import { styles } from "./Login";
 import { useRef, useState } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 
 const Register = () => {
@@ -18,7 +17,7 @@ const Register = () => {
   const auth = getAuth();
   const db = getFirestore();
 
-  const onSubmit = (value: any) => {
+  const onSubmit = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;

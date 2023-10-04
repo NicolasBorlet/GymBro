@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 import Test from "../src/Test";
 import { Redirect } from "expo-router";
 import { useFonts } from "expo-font";
 import { auth } from "../firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Page() {
   const user = auth.currentUser;
-  const asyncStorage = AsyncStorage.getItem("login-key");
 
   const [fontsLoaded] = useFonts({
     Poppins: require("../assets/fonts/Poppins-Regular.ttf"),
@@ -19,10 +17,15 @@ export default function Page() {
   }
 
   if (!user) {
-    return <Redirect href="auth/login" />;
+    return <Redirect href="/auth/goals" />;
   } else if (user) {
     return <Redirect href="/home" />;
   }
+
+  useEffect(() => {
+    const user = auth.currentUser;
+    console.log(user);
+  }, []);
 
   return (
     <View>

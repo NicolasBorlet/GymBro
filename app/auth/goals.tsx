@@ -1,7 +1,7 @@
-import { View, Text } from "react-native";
-import Profile from "../../src/Login/Profile";
+import { Text, View } from "react-native";
+import Goals from "../../src/Login/Goals";
 
-const profile = () => {
+const goals = () => {
   return (
     <View
       style={{
@@ -10,9 +10,9 @@ const profile = () => {
         justifyContent: "space-between",
       }}
     >
-      <Profile />
+      <Goals />
     </View>
   );
 };
 
-export default profile;
+export default goals;
