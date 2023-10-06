@@ -1,10 +1,18 @@
 import { router } from "expo-router";
-import { View, Text, Pressable, Image, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
 import { styles } from "./Login";
 import { useRef, useState } from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -13,11 +21,12 @@ const Register = () => {
   const [number, setNumber] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const passwordInputRef = useRef<any>(null);
-  const auth = getAuth();
-  const db = getFirestore();
 
   const onSubmit = () => {
+    setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -33,6 +42,7 @@ const Register = () => {
         // Utilisez setDoc pour créer le document
         setDoc(userDocRef, userData)
           .then(() => {
+            setIsLoading(false);
             router.push("/auth/profile");
           })
           .catch((error) => {
@@ -47,172 +57,191 @@ const Register = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.h2}>Hey there,</Text>
-          <Text style={styles.h1}>Create an Account</Text>
-        </View>
-        <View style={styles.inputContainer}>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              value={fullname}
-              onChangeText={(text) => setFullname(text)}
-              keyboardType="default"
-            />
-            <Image
-              style={styles.icon}
-              source={require("../../assets/account-icon.png")}
-            />
-          </View>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              value={number}
-              onChangeText={(text) => setNumber(text)}
-              keyboardType="email-address"
-            />
-            <Image
-              style={styles.icon}
-              source={require("../../assets/phone.png")}
-            />
-          </View>
-          <View>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              onSubmitEditing={() => passwordInputRef.current.focus()}
-              keyboardType="email-address"
-            />
-            <Image
-              style={styles.icon}
-              source={require("../../assets/iconly-light-message.png")}
-            />
-          </View>
-          <View>
-            <Pressable onPress={() => setIsShowPassword(!isShowPassword)}>
-              <Image
-                style={styles.iconPassword}
-                source={require("../../assets/hide-password.png")}
-              />
-            </Pressable>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              textContentType="password"
-              secureTextEntry={!isShowPassword}
-              ref={passwordInputRef}
-            />
-            <Image
-              style={styles.icon}
-              source={require("../../assets/iconly-light-lock.png")}
-            />
-          </View>
-        </View>
-      </View>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 30,
-        }}
-      >
-        <Pressable style={styles.pressableStyle} onPress={onSubmit}>
-          <LinearGradient
-            colors={["#CC8FED", "#6B50F6"]} // Définissez les couleurs de votre dégradé
-            start={[0, 0.5]} // Définissez le point de départ du dégradé (0,0) = coin supérieur gauche
-            end={[1, 0.5]} // Définissez le point de fin du dégradé (1,0) = coin supérieur droit
-            style={styles.linearGradient}
-          >
-            <Text style={styles.loginText}>Register</Text>
-          </LinearGradient>
-        </Pressable>
+    <>
+      {isLoading && (
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
+            flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            gap: 10,
-            borderTopColor: "#DDDADA",
-            borderTopWidth: 1,
-            borderStyle: "solid",
-            width: 315,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 999,
           }}
         >
-          <Text
-            style={{
-              backgroundColor: "#FFFFFF",
-              marginTop: -10,
-              width: 34,
-              textAlign: "center",
-            }}
-          >
-            Or
-          </Text>
+          <ActivityIndicator size="small" color="#6B50F6" />
+        </View>
+      )}
+      <View style={styles.container}>
+        <View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.h2}>Hey there,</Text>
+            <Text style={styles.h1}>Create an Account</Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Full Name"
+                value={fullname}
+                onChangeText={(text) => setFullname(text)}
+                keyboardType="default"
+              />
+              <Image
+                style={styles.icon}
+                source={require("../../assets/account-icon.png")}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Phone Number"
+                value={number}
+                onChangeText={(text) => setNumber(text)}
+                keyboardType="email-address"
+              />
+              <Image
+                style={styles.icon}
+                source={require("../../assets/phone.png")}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                onSubmitEditing={() => passwordInputRef.current.focus()}
+                keyboardType="email-address"
+              />
+              <Image
+                style={styles.icon}
+                source={require("../../assets/iconly-light-message.png")}
+              />
+            </View>
+            <View>
+              <Pressable onPress={() => setIsShowPassword(!isShowPassword)}>
+                <Image
+                  style={styles.iconPassword}
+                  source={require("../../assets/hide-password.png")}
+                />
+              </Pressable>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                textContentType="password"
+                secureTextEntry={!isShowPassword}
+                ref={passwordInputRef}
+              />
+              <Image
+                style={styles.icon}
+                source={require("../../assets/iconly-light-lock.png")}
+              />
+            </View>
+          </View>
         </View>
         <View
           style={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
+            flexDirection: "column",
+            justifyContent: "space-between",
             alignItems: "center",
             gap: 30,
-            width: 315,
           }}
         >
-          <View>
-            <Pressable
+          <Pressable style={styles.pressableStyle} onPress={onSubmit}>
+            <LinearGradient
+              colors={["#CC8FED", "#6B50F6"]} // Définissez les couleurs de votre dégradé
+              start={[0, 0.5]} // Définissez le point de départ du dégradé (0,0) = coin supérieur gauche
+              end={[1, 0.5]} // Définissez le point de fin du dégradé (1,0) = coin supérieur droit
+              style={styles.linearGradient}
+            >
+              <Text style={styles.loginText}>Register</Text>
+            </LinearGradient>
+          </Pressable>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+              borderTopColor: "#DDDADA",
+              borderTopWidth: 1,
+              borderStyle: "solid",
+              width: 315,
+            }}
+          >
+            <Text
               style={{
-                borderColor: "#DDDADA",
-                borderWidth: 1,
-                borderStyle: "solid",
-                padding: 15,
-                borderRadius: 14,
+                backgroundColor: "#FFFFFF",
+                marginTop: -10,
+                width: 34,
+                textAlign: "center",
               }}
             >
-              <Image
-                source={require("../../assets/google-logo.png")}
-                style={{ width: 20, height: 20 }}
-              />
-            </Pressable>
+              Or
+            </Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 30,
+              width: 315,
+            }}
+          >
+            <View>
+              <Pressable
+                style={{
+                  borderColor: "#DDDADA",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  padding: 15,
+                  borderRadius: 14,
+                }}
+              >
+                <Image
+                  source={require("../../assets/google-logo.png")}
+                  style={{ width: 20, height: 20 }}
+                />
+              </Pressable>
+            </View>
+            <View>
+              <Pressable
+                style={{
+                  borderColor: "#DDDADA",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  padding: 15,
+                  borderRadius: 14,
+                }}
+              >
+                <Image
+                  source={require("../../assets/facebook-logo.png")}
+                  style={{ width: 20, height: 20 }}
+                />
+              </Pressable>
+            </View>
           </View>
           <View>
-            <Pressable
-              style={{
-                borderColor: "#DDDADA",
-                borderWidth: 1,
-                borderStyle: "solid",
-                padding: 15,
-                borderRadius: 14,
-              }}
-            >
-              <Image
-                source={require("../../assets/facebook-logo.png")}
-                style={{ width: 20, height: 20 }}
-              />
-            </Pressable>
+            <Text>
+              Already have an account?{" "}
+              <Pressable onPress={() => router.push("/auth/login")}>
+                <Text style={{ color: "#6B50F6" }}>Login</Text>
+              </Pressable>
+            </Text>
           </View>
-        </View>
-        <View>
-          <Text>
-            Already have an account?{" "}
-            <Pressable onPress={() => router.push("/auth/login")}>
-              <Text style={{ color: "#6B50F6" }}>Login</Text>
-            </Pressable>
-          </Text>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 

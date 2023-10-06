@@ -1,17 +1,20 @@
 import { View } from "react-native";
 import Success from "../../src/Login/Success";
+import Layout from "../../src/layout";
 
 const success = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Success />
-    </View>
+    <Layout>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Success />
+      </View>
+    </Layout>
   );
 };
 

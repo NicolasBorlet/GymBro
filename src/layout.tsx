@@ -1,13 +1,22 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
+import { RecoilRoot } from "recoil";
 
-const layout = ({ children }: any) => {
+const Layout = ({ children }: any) => {
   return (
-    <View>
+    <RecoilRoot>
       {/* <Header /> */}
-      <ScrollView>{children}</ScrollView>
+      <View
+        style={{
+          flex: 1,
+          padding: 20,
+          backgroundColor: "#fff",
+        }}
+      >
+        {children}
+      </View>
       {/* <Footer /> */}
-    </View>
+    </RecoilRoot>
   );
 };
 
-export default layout;
+export default Layout;

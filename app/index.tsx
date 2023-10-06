@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
-import Test from "../src/Test";
 import { Redirect } from "expo-router";
 import { useFonts } from "expo-font";
 import { auth } from "../firebaseConfig";
@@ -17,7 +16,7 @@ export default function Page() {
   }
 
   if (!user) {
-    return <Redirect href="/auth/success" />;
+    return <Redirect href="/auth/login" />;
   } else if (user) {
     return <Redirect href="/home" />;
   }
@@ -29,10 +28,7 @@ export default function Page() {
 
   return (
     <View>
-      <View>
-        <Test />
-        <Text className="text-3xl font-extrabold">cdjksn</Text>
-      </View>
+      <Text className="text-3xl font-extrabold">cdjksn</Text>
     </View>
   );
 }

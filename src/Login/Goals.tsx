@@ -3,9 +3,11 @@ import { styles } from "./Login";
 import Carousel from "react-native-reanimated-carousel";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
+import { router } from "expo-router";
+import { useRecoilState } from "recoil";
+import { UserDataAtoms } from "../Atoms/UserAtoms";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../firebaseConfig";
-import { router } from "expo-router";
 
 const Goals = () => {
   const [activeIndex, setActiveIndex] = useState(0);

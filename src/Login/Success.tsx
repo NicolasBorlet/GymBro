@@ -10,6 +10,8 @@ const Success = () => {
         flex: 1,
         alignItems: "center",
         justifyContent: "space-between",
+        paddingTop: 100,
+        paddingBottom: 30,
       }}
     >
       <View
@@ -65,7 +67,9 @@ const Success = () => {
       >
         <Pressable
           style={styles.pressableStyle}
-          onPress={() => router.push("/home")}
+          onPress={() => {
+            router.push("/home");
+          }}
         >
           <LinearGradient
             colors={["#CC8FED", "#6B50F6"]} // Définissez les couleurs de votre dégradé
