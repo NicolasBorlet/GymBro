@@ -23,9 +23,6 @@ const Login = () => {
   const onSubmit = (value: any) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        const jsonValue = JSON.stringify(value);
-        AsyncStorage.setItem("login-key", jsonValue);
         router.push("/home");
       })
       .catch((error) => {
